@@ -1,3 +1,0 @@
-(
-  -cclib "-Xlinker -rpath=/usr/local/lib"
-)

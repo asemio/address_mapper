@@ -1,0 +1,6 @@
+_opam
+_build
+credentials.json
+
+# MacOS file system auxiliary files
+.DS_Store

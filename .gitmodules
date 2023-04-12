@@ -1,3 +1,6 @@
 [submodule "ocaml_maps/libpostal"]
 	path = ocaml_maps/libpostal
 	url = https://github.com/openvenues/libpostal.git
+[submodule "address_mapper/libpostal"]
+	path = address_mapper/libpostal
+	url = https://github.com/openvenues/libpostal.git
