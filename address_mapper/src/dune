@@ -9,7 +9,6 @@
     lib
     dbf
     csv-lwt
-    uuidm
   )
   (preprocess (pps
     ppx_jane
@@ -20,26 +19,4 @@
   ))
   (modes exe)
   (link_flags (:include link_flags_%{system}.dune))
-)
-(executable
-  (name test)
-  (modules test)
-  (libraries
-    core
-    lwt
-    lwt.unix
-    lib
-    alcotest
-    alcotest-lwt
-    uuidm
-  )
-  (preprocess (pps
-    ppx_jane
-    lwt_ppx
-    ppx_deriving_yojson
-    ppx_expect
-    ppx_profile
-  ))
-  (modes exe)
-  ; (link_flags (-cclib -fuse-ld=mold -cc clang++))
 )

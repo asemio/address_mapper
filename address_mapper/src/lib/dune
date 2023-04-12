@@ -9,7 +9,6 @@
     dbf
     postal
     asemio_stats
-    uuidm
   )
   (inline_tests)
   (preprocess (pps

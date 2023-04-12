@@ -1,0 +1,37 @@
+opam-version: "2.0"
+maintainer: "Asemio"
+authors: [
+  "Larry Darryl Lee Jr."
+]
+synopsis: "Maps addresses onto census tracts and other geographical regions."
+description: """
+Maps addresses onto census tracts and other geographical regions. This program takes ESRI Shapefiles published by the Census Bureau and determines which geographical regions contain them.
+"""
+license: "GPLv3"
+tags: []
+homepage: "https://github.com/asemio/address_mapper"
+doc: "https://github.com/asemio/address_mapper"
+bug-reports: "https://github.com/asemio/address_mapper"
+pin-depends: [
+  ["ppx_profile.1.0.0" "git+https://github.com/llee454/ppx_profile.git#main"]
+  ["asemio_stats.1.0.0" "git+https://github.com/llee454/ocaml-gsl-demo.git#main"]
+]
+depends: [
+  "ocaml"
+  "dune"
+  "ocaml-lsp-server"
+  "ocamlformat"
+  "ppx_jane"
+  "core"
+  "core_unix"
+  "lwt"
+  "lwt_ppx"
+  "csv-lwt"
+  "conf-libev"
+  "yojson" { >= "1.7.0" & < "2.0.0" }
+  "ppx_deriving_yojson" { >= "3.5.2" }
+  "shapefile"
+  "dbf"
+  "ppx_profile" { = "1.0.0" }
+  "asemio_stats" { = "1.0.0" }
+]

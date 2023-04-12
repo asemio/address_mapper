@@ -2,5 +2,7 @@ _opam
 _build
 credentials.json
 
+address_mapper/segments_map.bin
+
 # MacOS file system auxiliary files
 .DS_Store

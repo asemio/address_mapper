@@ -1,4 +1,3 @@
-(data_only_dirs data)
 (env
   (dev
     (flags (:standard -warn-error -A))
