@@ -1,0 +1,4 @@
+(
+  -cclib -fuse-ld=mold ;instruct the compiler system to use the Mold linker (this flag is consumed by clang)
+  -cc clang++
+)

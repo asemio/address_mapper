@@ -1,0 +1,5 @@
+**/_build
+**/_opam
+journal
+src/libpostal/libpostal_data
+data-essay

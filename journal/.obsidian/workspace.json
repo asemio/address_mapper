@@ -1,0 +1,154 @@
+{
+  "main": {
+    "id": "367099bc3fce4789",
+    "type": "split",
+    "children": [
+      {
+        "id": "e0a9359f2251fba3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8c8b0fbdcecfb7c7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "census tract lookup.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "78d339c2425f0a0e",
+    "type": "split",
+    "children": [
+      {
+        "id": "f0d38e5c523333d6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7826262b74c0151e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "6d1dac2e3f7ab80d",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "38c084d86e4a5771",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "e539c0a07eb87717",
+    "type": "split",
+    "children": [
+      {
+        "id": "9921fe0639b75c27",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "aa98dc5db4103bde",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "census tract lookup.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "6f0037b0c0aa7c1e",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "census tract lookup.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "7236ee9500fe9bd9",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "30fc7a40be814539",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "census tract lookup.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "8c8b0fbdcecfb7c7",
+  "lastOpenFiles": [
+    "2023-04-04.md",
+    "census tract lookup.md"
+  ]
+}
