@@ -139,10 +139,11 @@ type t = {
   *)
 let canonicalize_street_name name =
   String.lowercase name
-  |> String.filter ~f:(fun c -> not @@ List.mem [ '.'; '-'; '#' ] c ~equal:[%equal: char])
+  |> String.filter ~f:(fun c -> not @@ List.mem [ ','; '.'; '#' ] c ~equal:[%equal: char])
   |> fun init ->
   List.fold
     [
+      "-", " ";
       "first", "fst";
       "second", "snd";
       "third", "thd";
@@ -150,12 +151,14 @@ let canonicalize_street_name name =
       "road", "rd";
       "avenue", "ave";
       "place", "pl";
+      "drive", "dr";
       "boulevard", "blvd";
       "north", "n";
       "east", "e";
       "west", "w";
       "south", "s";
       " th", "th";
+      "nbr", "apt";
     ]
     ~init
     ~f:(fun acc (pattern, with_) -> String.substr_replace_all acc ~pattern ~with_)

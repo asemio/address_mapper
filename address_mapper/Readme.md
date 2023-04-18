@@ -57,7 +57,7 @@ Note: this program will generate a cache file called "segments_map.bin" by defau
 Generating the Docker Image
 ---------------------------
 
-Run `docker build . -t "llee454/address_mapper"` to build the Docker image.
+Run `docker build . -t "llee454/address_mapper"` from address_mapper/ to build the Docker image.
 
 Deploying the Docker Image
 --------------------------
