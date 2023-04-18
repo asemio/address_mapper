@@ -133,6 +133,33 @@ type t = {
 [@@deriving
   fields, sexp, stable_record ~version:Dbf.t ~remove:[ center ] ~modify:[ left_side; right_side ]]
 
+(**
+    Apply standard transformations to road names to reduce the rate of
+    false negatives when matching address road names.
+  *)
+let canonicalize_street_name name =
+  String.lowercase name
+  |> String.filter ~f:(fun c -> not @@ List.mem [ '.'; '-'; '#' ] c ~equal:[%equal: char])
+  |> fun init ->
+  List.fold
+    [
+      "first", "fst";
+      "second", "snd";
+      "third", "thd";
+      "street", "st";
+      "road", "rd";
+      "avenue", "ave";
+      "place", "pl";
+      "boulevard", "blvd";
+      "north", "n";
+      "east", "e";
+      "west", "w";
+      "south", "s";
+      " th", "th";
+    ]
+    ~init
+    ~f:(fun acc (pattern, with_) -> String.substr_replace_all acc ~pattern ~with_)
+
 (*
   A two dimensional vector that is used for scratch calculations to
   minimize the number of memory allocations performed when determining
@@ -196,13 +223,10 @@ let get workspace (tracts : Census_tract.Lookup.t) (attribs : Dbf.t array) (shap
     https://www.usna.edu/Users/oceano/pguth/md_help/html/approx_equivalents.htm
   *)
   let delta = 0.0001 in
-  printf "Indexing %d street segments.\n" (Array.length shapes);
-  flush stdout;
+  verbose_print @@ sprintf "Indexing %d street segments.\n" (Array.length shapes);
   Array.map2_exn attribs shapes ~f:(fun attribs s ->
       if !num_segments_processed % 1000 = 0
-      then (
-        printf "Indexed %d street segments.\n" !num_segments_processed;
-        flush stdout);
+      then verbose_print @@ sprintf "Indexed %d street segments.\n" !num_segments_processed;
       incr num_segments_processed;
       let pline = Shape.pline_of_shape s in
       let center : Shape.point = Shape.BBox.get_center pline.bbox in
@@ -246,9 +270,10 @@ let get_segment_map segs =
       Postal.parse key
       |> Postal.AddressSet.iter ~f:(function
            | Postal.Address.{ road = Some road; _ } ->
-             String.Table.update index road ~f:(function
-               | None -> data
-               | Some segments -> data @ segments)
+             canonicalize_street_name road
+             |> String.Table.update index ~f:(function
+                  | None -> data
+                  | Some segments -> data @ segments)
            | _ -> ()));
   index
 
@@ -268,7 +293,8 @@ let get_segment_tract segments address =
       match num_opt with
       | None -> None
       | Some num ->
-        String.Table.find segments road
+        canonicalize_street_name road
+        |> String.Table.find segments
         >>= List.find_map ~f:(fun segment ->
                 match segment.left_side, segment.right_side with
                 | Some side, _ when Side.address_on_side num side -> side.tract
