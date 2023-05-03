@@ -31,6 +31,7 @@ module Config = struct
     address_columns: string list;
     libpostal_data_dir: string;
     census_tract_dbf_file: string;
+    census_tract_dbf_file_name_column: string;
     census_tract_shp_file: string;
     census_addrfeat_dbf_file: string;
     census_addrfeat_shp_file: string;
@@ -75,7 +76,10 @@ let write_road_segment_table_file (config : Config.t) road_segments_map =
   Marshal.to_string data [] |> Aux.write_to_file ~filename:config.segment_map_file
 
 let create_census_tract_svg (config : Config.t) =
-  let attribs = Asemio_dbf.read config.census_tract_dbf_file |> Census_tract.Dbf.get in
+  let attribs =
+    Asemio_dbf.read config.census_tract_dbf_file
+    |> Census_tract.Dbf.get config.census_tract_dbf_file_name_column
+  in
   let _header, shapes = Census_tract.Shape.read config.census_tract_simplified_shp_file in
   Census_tract.get attribs shapes
   |> Array.filter ~f:(fun tract -> Shape.BBox.overlaps config.census_tract_map_bbox tract.bbox)
@@ -85,7 +89,10 @@ let create_census_tract_svg (config : Config.t) =
   |> Aux.write_to_file ~filename:config.census_tract_map_file
 
 let create_census_tract_lookup_tree (config : Config.t) =
-  let attribs = Asemio_dbf.read config.census_tract_dbf_file |> Census_tract.Dbf.get in
+  let attribs =
+    Asemio_dbf.read config.census_tract_dbf_file
+    |> Census_tract.Dbf.get config.census_tract_dbf_file_name_column
+  in
   let header, shapes = Census_tract.Shape.read config.census_tract_shp_file in
   Census_tract.get attribs shapes |> Census_tract.Lookup.get_lookup_table tract_lookup_table_depth header
 

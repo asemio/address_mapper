@@ -2,6 +2,7 @@
     "output_column": "census_tract",
     "address_columns": [ "Billing Street" ],
     "libpostal_data_dir": "libpostal/libpostal_data/libpostal",
+    "census_tract_dbf_file_name_column": "NAME",
     "census_tract_dbf_file": "data/tl_2022_40_tract/tl_2022_40_tract.dbf",
     "census_tract_shp_file": "data/tl_2022_40_tract/tl_2022_40_tract.shp",
     "census_addrfeat_dbf_file": "data/tl_2022_40143_addrfeat/tl_2022_40143_addrfeat.dbf",

@@ -12,7 +12,6 @@ module Dbf = struct
 
   type t = {
     id: int;
-    geoid: string;
     name: string;
   }
   [@@deriving sexp]
@@ -22,10 +21,10 @@ module Dbf = struct
     returns the information about the census tracts described in the
     file.
   *)
-  let get { header; columns } =
+  let get column_name { header; columns } =
     let get_column = List.Assoc.find_exn columns ~equal:[%equal: string] in
-    let geoids, names = get_column "GEOID" |> get_string, get_column "NAME" |> get_string in
-    Array.init header.nrecords ~f:(fun id : t -> { id; geoid = geoids.(id); name = names.(id) })
+    let names = get_column column_name |> get_string in
+    Array.init header.nrecords ~f:(fun id : t -> { id; name = names.(id) })
 end
 
 module Shape = struct
@@ -53,7 +52,6 @@ end
 (** Represents census tracts and their geographic regions. *)
 type tract = {
   id: int;
-  geoid: string;
   name: string;
   bbox: Shape.BBox.t;
   shape: Shape.Polygon.t;
