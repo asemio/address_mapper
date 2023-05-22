@@ -300,7 +300,13 @@ let get_segment_tract segments address =
         |> String.Table.find segments
         >>= List.find_map ~f:(fun segment ->
                 match segment.left_side, segment.right_side with
-                | Some side, _ when Side.address_on_side num side -> side.tract
-                | _, Some side when Side.address_on_side num side -> side.tract
-                | _, _ -> None))
+                | Some side, _ when Side.address_on_side num side ->
+                  (* print_endline @@ sprintf !"%{sexp: Census_tract.t option}" side.tract; *)
+                  side.tract
+                | _, Some side when Side.address_on_side num side ->
+                  (* print_endline @@ sprintf !"%{sexp: Census_tract.t option}" side.tract; *)
+                  side.tract
+                | _, _ ->
+                  (* print_endline "no match"; *)
+                  None))
     | _ -> None)

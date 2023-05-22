@@ -1,0 +1,13 @@
+{
+    "census_tract_dbf_file_name_column": "elem_dist",
+    "census_tract_dbf_file": "data/tps_elementary_school_2022c/tps_elementary_school_2022c.dbf",
+    "census_tract_simplified_shp_file": "data/tps_elementary_school_2022_simpl/tps_elementary_school_2022_simpl.shp",
+    "census_tract_map_base_layer_file": "tulsa_base_map.png",
+    "census_tract_map_file": "census_tracts.svg",
+    "census_tract_map_bbox": {
+      "xmin": -96.213993,
+      "xmax": -95.610537,
+      "ymax": 36.292931,
+      "ymin": 35.926280
+    }
+}

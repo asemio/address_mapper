@@ -142,7 +142,7 @@ let main Command_line.{ config_file_path; verbose } =
   (* II. Load the Lib Postal data *)
   let* () = Postal.setup config.libpostal_data_dir () in
   (* III. Index the street segments to create the Census Tract Lookup Hash Table *)
-  let* () = create_census_tract_svg config in
+  (* let* () = create_census_tract_svg config in *)
   let* road_segments_map = get_road_segments_map config in
   (* IV. Map the addresses onto Census Tracts *)
   process_data_file config headers address_column_indices road_segments_map stream

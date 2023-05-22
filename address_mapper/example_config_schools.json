@@ -1,0 +1,22 @@
+{
+    "output_column": "census_tract",
+    "address_columns": [ "Billing Street" ],
+    "libpostal_data_dir": "libpostal/libpostal_data/libpostal",
+    "census_tract_dbf_file_name_column": "elem_dist",
+    "census_tract_dbf_file": "data/tps_elementary_school_2022c/tps_elementary_school_2022c.dbf",
+    "census_tract_shp_file": "data/tps_elementary_school_2022c/tps_elementary_school_2022c.shp",
+    "census_addrfeat_dbf_file": "data/tl_2022_40143_addrfeat/tl_2022_40143_addrfeat.dbf",
+    "census_addrfeat_shp_file": "data/tl_2022_40143_addrfeat/tl_2022_40143_addrfeat.shp",
+    "input_file": "example_clients.csv",
+    "output_file": "example_clients_with_census_tract.csv",
+    "segment_map_file": "segments_map.bin",
+    "census_tract_simplified_shp_file": "data/tl_2022_40_tract_simpl.shp",
+    "census_tract_map_base_layer_file": "tulsa_base_map.png",
+    "census_tract_map_file": "census_tracts.svg",
+    "census_tract_map_bbox": {
+      "xmin": -96.213993,
+      "xmax": -95.610537,
+      "ymax": 36.292931,
+      "ymin": 35.926280
+    }
+}

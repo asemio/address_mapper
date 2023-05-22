@@ -1,0 +1,22 @@
+(executable
+  (name main)
+  (modules main)
+  (libraries
+    core
+    core_unix.command_unix
+    lwt
+    lwt.unix
+    lib
+    dbf
+    csv-lwt
+  )
+  (preprocess (pps
+    ppx_jane
+    lwt_ppx
+    ppx_deriving_yojson
+    ppx_expect
+    ppx_profile
+  ))
+  (modes exe)
+  (link_flags (:include link_flags_%{system}.dune))
+)

@@ -1,0 +1,20 @@
+(library
+  (name lib)
+  (libraries
+    core
+    csv-lwt
+    lwt
+    lwt.unix
+    shapefile
+    dbf
+    asemio_stats
+  )
+  (inline_tests)
+  (preprocess (pps
+    ppx_jane
+    lwt_ppx
+    ppx_deriving_yojson
+    ppx_expect
+    ppx_profile
+  ))
+)
