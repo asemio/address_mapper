@@ -1,5 +1,11 @@
+SVG Map Readme
+==============
+
+The SVG Map generator program takes an ESRI shapefile and returns an SVG image that plots the Shapefile regions.
+
+
 Data Readme
-===========
+-----------
 
 These files were downloaded from the Census Bureau's website.
 
