@@ -67,6 +67,11 @@ let get (attribs : Dbf.t array) (shapes : Shape.Polygon.t array) =
   Array.map2_exn attribs shapes ~f:(fun attribs shape ->
       tract_of_Dbf_t attribs ~bbox:shape.bbox ~shape)
 
+
+(** Accepts a string and HTML encodes the string so that it can be embedded into an SVG element *)
+let svg_encode s =
+  String.substr_replace_all s ~pattern:"&" ~with_:"&amp;"
+
 (**
   Accepts six arguments:
 
@@ -111,10 +116,10 @@ let tract_to_svg_polygons ~width ~height ?get_id ?get_fill Shape.BBox.{ xmin; xm
       sprintf
         {svg|<polygon%s points="%s" fill="%s" stroke="black" />
 <text vertical-align="middle" text-anchor="middle" x="%d" y="%d" font-size="2px">%s</text>|svg}
-        id points fill
+        (svg_encode id) points fill
         (Float.iround_nearest_exn (!x_sum // Array.length ps))
         (Float.iround_nearest_exn (!y_sum // Array.length ps))
-        tract.name)
+        (svg_encode tract.name))
 
 (**
   Accepts six arguments:
@@ -133,20 +138,24 @@ let tract_to_svg_polygons ~width ~height ?get_id ?get_fill Shape.BBox.{ xmin; xm
 
   and returns an SVG string that represent the given census tracts.
 *)
-let tracts_to_svg ~(width : int) ~height ?get_id ?get_fill bbox base_layer_url tracts =
+let tracts_to_svg ~(width : int) ~height ?get_id ?get_fill bbox base_layer tracts =
   let polygons =
     Array.concat_map tracts ~f:(tract_to_svg_polygons ~width ~height ?get_id ?get_fill bbox)
     |> String.concat_array ~sep:"\n"
   in
+  (* let base_image = Base64.encode_string 
+  in *)
   sprintf
     {svg|<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="%d" height="%d" viewBox="0 0 %d %d" xmlns="http://www.w3.org/2000/svg">
-  <image href="%s" width="%d" height="%d" />
+  <image
+    preserveAspectRatio="xMinYMid slice"
+    href="data:image/png;base64,%s" width="%d" height="%d" />
   %s
 </svg>
 |svg}
-    width height width height base_layer_url width height polygons
+    width height width height base_layer width height polygons
 
 
 type t = tract [@@deriving sexp]

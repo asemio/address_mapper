@@ -8,6 +8,7 @@
     shapefile
     dbf
     asemio_stats
+    base64
   )
   (inline_tests)
   (preprocess (pps

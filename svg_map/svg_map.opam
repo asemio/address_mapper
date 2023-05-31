@@ -34,4 +34,5 @@ depends: [
   "dbf"
   "ppx_profile" { = "1.0.0" }
   "asemio_stats" { = "1.0.0" }
+  "base64"
 ]

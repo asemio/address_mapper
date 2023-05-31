@@ -25,3 +25,10 @@ opam update
 opam install --deps-only . -y
 dune build
 ```
+
+Execution
+---------
+
+```bash
+dune exec src/main.exe CONFIG
+```
