@@ -37,7 +37,7 @@ let create_census_tract_svg (config : Config.t) =
   let _header, shapes = Census_tract.Shape.read config.census_tract_simplified_shp_file in
   Census_tract.get attribs shapes
   |> Array.filter ~f:(fun tract -> Shape.BBox.overlaps config.census_tract_map_bbox tract.bbox)
-  |> Census_tract.tracts_to_svg ~width:500 ~height:500
+  |> Census_tract.tracts_to_svg ~width:1000 ~height:1000
        ~get_id:(fun _i tract -> sprintf "%s" tract.name)
        config.census_tract_map_bbox base_layer
   |> Aux.write_to_file ~filename:config.census_tract_map_file

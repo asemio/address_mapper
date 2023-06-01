@@ -115,7 +115,7 @@ let tract_to_svg_polygons ~width ~height ?get_id ?get_fill Shape.BBox.{ xmin; xm
       in
       sprintf
         {svg|<polygon%s points="%s" fill="%s" stroke="black" />
-<text vertical-align="middle" text-anchor="middle" x="%d" y="%d" font-size="2px">%s</text>|svg}
+<text vertical-align="middle" text-anchor="middle" x="%d" y="%d" font-size="10px">%s</text>|svg}
         (svg_encode id) points fill
         (Float.iround_nearest_exn (!x_sum // Array.length ps))
         (Float.iround_nearest_exn (!y_sum // Array.length ps))
@@ -150,7 +150,7 @@ let tracts_to_svg ~(width : int) ~height ?get_id ?get_fill bbox base_layer tract
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="%d" height="%d" viewBox="0 0 %d %d" xmlns="http://www.w3.org/2000/svg">
   <image
-    preserveAspectRatio="xMinYMid slice"
+    preserveAspectRatio="none"
     href="data:image/png;base64,%s" width="%d" height="%d" />
   %s
 </svg>
