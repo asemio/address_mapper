@@ -112,6 +112,7 @@ where:
 * and $\delta_i := s_{i,1} - s_{i,0}$.
 
 We can combine (2) into a matrix expression, solve for $k_0$ and $k_1$, and check that they fall within the prescribed bounds. Doing so gives the following expression:
+
 $$
 \begin{align}
 \begin{bmatrix}
@@ -124,17 +125,20 @@ $$
 \end{bmatrix}^{-1} (s_{1,0} - s_{0,0}).
 \end{align}
 $$
+
 The `Geometry.intersect` function performs this operation. It computes the values for $k_0$ and $k_1$ using these operations and then checks that they fall within the necessary bounds.
 
 The discussion up until now has glossed over several important edge cases that must be handled when using this method. First, $s$ can intersect two segments $s_{i}$ and $s_{i + 1}$ through a shared endpoint. When this occurs we should not count each intersection twice. We can handle this case effectively by counting each endpoint intersection as $\frac{1}{2}$. This way, two endpoint intersections, will be counted correctly as a single boundary crossing.
 
 The second edge case is that $s$ may run along one of the polygon edges. In this case, the matrix in (5) does not have an inverse because the column vectors are linearly dependent. In general, two line segments $s_0$ and $s_1$ are collinear and "overlap" (see below) iff:
+
 $$
 \begin{align}
 collinearOverlap? (s_0, s_1) &:= \exists\ k_0\ k_1 \in \R, k_0\ \delta_0 + s_{0,0} = s_{1,0} \wedge\ k_1\ \delta_0 + s_{0, 0} = s_{1, 1}\\
 &\hspace{2em}\wedge 0 \le k_1 \le 1.
 \end{align}
 $$
+
 Where we say that the two segments "overlap" iff $s_1$'s endpoint lies on $s_0$. The `Geometry.collinear_point` function is responsible for detecting when a point lies on a polygon edge, and it is called by `Geometry.intersect`. One last note, to maximize performance, `Geometry.intersect` does not explicitly create and invert the matrix in (5). Instead, it "unfolds" the arithmetic operations.
 
 ## References
