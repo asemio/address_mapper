@@ -1,0 +1,13 @@
+{
+    "census_tract_dbf_file_name_column": "NAME",
+    "census_tract_dbf_file": "data/tulsa_area_school_districts/tulsa_area_school_districts.dbf",
+    "census_tract_simplified_shp_file":  "data/tulsa_area_school_districts/tulsa_area_school_districts.shp",
+    "census_tract_map_base_layer_file": "base_maps/tulsa_base_map.png",
+    "census_tract_map_file": "tulsa_area_school_districts.svg",
+    "census_tract_map_bbox": {
+      "xmin": -96.300583296,
+      "xmax": -95.753163045,
+      "ymax": 36.432794509,
+      "ymin": 35.905743384
+    }
+}
