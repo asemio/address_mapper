@@ -1,6 +1,5 @@
 open! Core
 open! Aux
-open! Asemio_stats
 include Shape
 
 module Segment = struct

@@ -29,6 +29,7 @@ module Config = struct
   type t = {
     output_column: string;
     address_columns: string list;
+    zip_column: string option; [@default None]
     libpostal_data_dir: string;
     census_tract_dbf_file: string;
     census_tract_dbf_file_name_column: string;
@@ -55,6 +56,11 @@ let get_address_column_indices ~column_names headers =
           [%sexp_of: string]
       | Some (index, _) -> Some index)
 
+(**
+  WARNING: if you change this program's record structures and then
+  call Marshal.from_string, this program will crash (potentially
+  segfault).
+*)
 let read_road_segment_table_file (config : Config.t) =
   let+ contents = Aux.read_file ~filename:config.segment_map_file in
   let (keys, data) : string array * Address_features.t list array = Marshal.from_string contents 0 in
@@ -95,7 +101,8 @@ let get_road_segments_map (config : Config.t) =
     let+ () = write_road_segment_table_file config road_segments_map in
     road_segments_map
 
-let process_data_file (config : Config.t) headers address_column_indices road_segments_map stream =
+let process_data_file (config : Config.t) headers zip_column_index address_column_indices
+   road_segments_map stream =
   let* oc = Lwt_io.open_file ~flags:overwrite_flags ~mode:Output config.output_file in
   let csv_output_channel = Csv_lwt.to_channel oc in
   let* () = Csv_lwt.output_record csv_output_channel (headers @ [ config.output_column ]) in
@@ -103,13 +110,16 @@ let process_data_file (config : Config.t) headers address_column_indices road_se
     Lwt_stream.fold_s
       (fun row i ->
         if i % progress_report_interval = 0 then verbose_print @@ sprintf "processing row %d\n" i;
-        let address =
-          List.map address_column_indices ~f:(List.nth_exn row)
-          |> String.concat ~sep:" "
-          |> Address_features.get_segment_tract road_segments_map
-          |> Option.value_map ~default:"" ~f:Census_tract.name
+        let address = List.map address_column_indices ~f:(List.nth_exn row) |> String.concat ~sep:" " in
+        let zip = Option.map zip_column_index ~f:(List.nth_exn row) in
+        let census_tracts =
+          Address_features.get_segment_tract road_segments_map ?zip address
+          |> String.Set.map ~f:Census_tract.name
+          |> String.Set.to_list
+          |> [%to_yojson: string list]
+          |> sprintf !"%{Yojson.Safe}"
         in
-        let+ () = row @ [ address ] |> Csv_lwt.output_record csv_output_channel in
+        let+ () = row @ [ census_tracts ] |> Csv_lwt.output_record csv_output_channel in
         succ i)
       stream 0
   in
@@ -121,9 +131,15 @@ let main Command_line.{ config_file_path; verbose } =
   let* config = read_config_file config_file_path in
   let* headers, stream = get_csv_stream config.input_file in
   let address_column_indices = get_address_column_indices ~column_names:config.address_columns headers in
+  let zip_column_index =
+    let open Option in
+    match config.zip_column with
+    | None -> None
+    | Some zip_column -> List.findi headers ~f:(fun _ -> [%equal: string] zip_column) >>| fst
+  in
   let* () = Postal.setup config.libpostal_data_dir () in
   let* road_segments_map = get_road_segments_map config in
-  process_data_file config headers address_column_indices road_segments_map stream
+  process_data_file config headers zip_column_index address_column_indices road_segments_map stream
 
 let () =
   let open Command in
@@ -143,4 +159,4 @@ let () =
        ~summary:
          "Accepts a CSV file containing addresses and adds a column that reports the census tract that \
           contains each address."
-  |> Command_unix.run ~version:"1.0"
+  |> Command_unix.run ~version:"2.0"

@@ -1,6 +1,7 @@
 {
     "output_column": "census_tract",
     "address_columns": [ "Billing Street" ],
+    "zip_column": "Billing Zip/Postal Code",
     "libpostal_data_dir": "libpostal/libpostal_data/libpostal",
     "census_tract_dbf_file_name_column": "NAME",
     "census_tract_dbf_file": "data/tl_2022_40_tract/tl_2022_40_tract.dbf",

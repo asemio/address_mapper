@@ -13,8 +13,8 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "2024-01-04.md",
-                "mode": "source",
+                "file": "census tract lookup.md",
+                "mode": "preview",
                 "source": false
               }
             }
@@ -93,7 +93,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "2024-01-04.md",
+                "file": "census tract lookup.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -110,7 +110,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "2024-01-04.md",
+                "file": "census tract lookup.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -133,7 +133,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "2024-01-04.md"
+                "file": "census tract lookup.md"
               }
             }
           }
@@ -156,8 +156,8 @@
   },
   "active": "8c8b0fbdcecfb7c7",
   "lastOpenFiles": [
-    "census tract lookup.md",
     "2024-01-04.md",
+    "census tract lookup.md",
     "qgis notes.md",
     "2023-04-04.md"
   ]

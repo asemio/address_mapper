@@ -30,6 +30,7 @@ module Dbf = struct
   type side = {
     house_numbers: Range.t;
     house_numbers_parity: Parity.t option;
+    zip: string;
   }
   [@@deriving sexp]
 
@@ -66,7 +67,9 @@ module Dbf = struct
           house_numbers_left_lower,
           house_numbers_left_upper,
           house_numbers_right_lower,
-          house_numbers_right_upper ) =
+          house_numbers_right_upper,
+          zip_left,
+          zip_right ) =
       ( get_column "FULLNAME" |> get_string,
         get_column "LINEARID" |> get_string,
         get_column "PARITYL" |> get_string,
@@ -74,7 +77,9 @@ module Dbf = struct
         get_column "LFROMHN" |> get_string,
         get_column "LTOHN" |> get_string,
         get_column "RFROMHN" |> get_string,
-        get_column "RTOHN" |> get_string )
+        get_column "RTOHN" |> get_string,
+        get_column "ZIPL" |> get_string,
+        get_column "ZIPR" |> get_string )
     in
     Array.init header.nrecords ~f:(fun id : t ->
         {
@@ -87,14 +92,22 @@ module Dbf = struct
                let%map upper = Asemio_dbf.int_of_string house_numbers_left_upper.(id) in
                Range.{ lower; upper }
              in
-             { house_numbers_parity = house_numbers_left_parity.(id) |> Parity.of_string; house_numbers });
+             {
+               house_numbers_parity = house_numbers_left_parity.(id) |> Parity.of_string;
+               house_numbers;
+               zip = zip_left.(id);
+             });
           right_side =
             (let%map house_numbers =
                let%bind lower = Asemio_dbf.int_of_string house_numbers_right_lower.(id) in
                let%map upper = Asemio_dbf.int_of_string house_numbers_right_upper.(id) in
                Range.{ lower; upper }
              in
-             { house_numbers_parity = house_numbers_right_parity.(id) |> Parity.of_string; house_numbers });
+             {
+               house_numbers_parity = house_numbers_right_parity.(id) |> Parity.of_string;
+               house_numbers;
+               zip = zip_right.(id);
+             });
         })
 end
 
@@ -104,6 +117,7 @@ module Side = struct
     house_numbers: Range.t;
     house_numbers_parity: Parity.t option;
     tract: Census_tract.t option;
+    zip: string;
   }
   [@@deriving fields, sexp, stable_record ~version:Dbf.side ~remove:[ tract ]]
 
@@ -226,10 +240,10 @@ let get workspace (tracts : Census_tract.Lookup.t) (attribs : Dbf.t array) (shap
     https://www.usna.edu/Users/oceano/pguth/md_help/html/approx_equivalents.htm
   *)
   let delta = 0.0001 in
-  verbose_print @@ sprintf "Indexing %d street segments.\n" (Array.length shapes);
+  verbose_print @@ sprintf "Indexing %d street segments." (Array.length shapes);
   Array.map2_exn attribs shapes ~f:(fun attribs s ->
       if !num_segments_processed % 1000 = 0
-      then verbose_print @@ sprintf "Indexed %d street segments.\n" !num_segments_processed;
+      then verbose_print @@ sprintf "Indexed %d street segments." !num_segments_processed;
       incr num_segments_processed;
       let pline = Shape.pline_of_shape s in
       let center : Shape.point = Shape.BBox.get_center pline.bbox in
@@ -283,30 +297,42 @@ let get_segment_map segs =
 (**
   Accepts a segments lookup tree and an address and returns the census
   tract that contains the address.
+  Note: its possible for two different streets (within two different
+  census tracts) to match the given address. As a result, we return
+  every match.
+  Note: this function accepts an optional zip code. If the zip code
+  argument is provided, this function will only match the address
+  against those streets that are located wihin the given zip code.
 *)
-let get_segment_tract segments address =
-  let open Option in
+let get_segment_tract segments ?zip address : Census_tract.Set.t =
   let canonical_addresses = Postal.parse address in
-  Postal.AddressSet.find_map canonical_addresses ~f:(function
-    | Postal.Address.{ road = Some road; house_number = Some house_number; _ } -> (
+  Postal.AddressSet.fold canonical_addresses ~init:Census_tract.Set.empty ~f:(fun acc -> function
+    | Postal.Address.{ road = Some road; house_number = Some house_number; postcode; _ } -> (
       let num_opt =
         try Some (Int.of_string house_number) with
         | Failure _ -> None
       in
+      let address_zip = Option.first_some zip postcode in
       match num_opt with
-      | None -> None
-      | Some num ->
-        canonicalize_street_name road
-        |> String.Table.find segments
-        >>= List.find_map ~f:(fun segment ->
-                match segment.left_side, segment.right_side with
-                | Some side, _ when Side.address_on_side num side ->
-                  (* print_endline @@ sprintf !"%{sexp: Census_tract.t option}" side.tract; *)
-                  side.tract
-                | _, Some side when Side.address_on_side num side ->
-                  (* print_endline @@ sprintf !"%{sexp: Census_tract.t option}" side.tract; *)
-                  side.tract
-                | _, _ ->
-                  (* print_endline "no match"; *)
-                  None))
-    | _ -> None)
+      | None -> acc
+      | Some num -> (
+        let segs_opt = String.Table.find segments (canonicalize_street_name road) in
+        match segs_opt with
+        | None -> acc
+        | Some segs ->
+          List.fold segs ~init:acc ~f:(fun acc segment ->
+              match segment.left_side, segment.right_side with
+              | Some side, _ when Side.address_on_side num side ->
+                Option.value_map side.tract ~default:acc ~f:(fun tract ->
+                    match address_zip with
+                    | None -> Census_tract.Set.add acc tract
+                    | Some zip when [%equal: string] side.zip zip -> Census_tract.Set.add acc tract
+                    | _ -> acc)
+              | _, Some side when Side.address_on_side num side ->
+                Option.value_map side.tract ~default:acc ~f:(fun tract ->
+                    match address_zip with
+                    | None -> Census_tract.Set.add acc tract
+                    | Some zip when [%equal: string] side.zip zip -> Census_tract.Set.add acc tract
+                    | _ -> acc)
+              | _, _ -> acc)))
+    | _ -> acc)
