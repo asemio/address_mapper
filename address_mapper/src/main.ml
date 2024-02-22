@@ -132,10 +132,15 @@ let main Command_line.{ config_file_path; verbose } =
   let* headers, stream = get_csv_stream config.input_file in
   let address_column_indices = get_address_column_indices ~column_names:config.address_columns headers in
   let zip_column_index =
-    let open Option in
     match config.zip_column with
     | None -> None
-    | Some zip_column -> List.findi headers ~f:(fun _ -> [%equal: string] zip_column) >>| fst
+    | Some zip_column -> (
+      List.findi headers ~f:(fun _ -> [%equal: string] zip_column) |> function
+      | None ->
+        failwiths ~here:[%here]
+          "Error: none of the headers in the CSV file match the given zip column name " zip_column
+          [%sexp_of: string]
+      | Some (zip_column_index, _) -> Some zip_column_index)
   in
   let* () = Postal.setup config.libpostal_data_dir () in
   let* road_segments_map = get_road_segments_map config in
