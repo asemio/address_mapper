@@ -14,7 +14,7 @@ doc: "https://github.com/asemio/address_mapper"
 bug-reports: "https://github.com/asemio/address_mapper"
 pin-depends: [
   ["ppx_profile.1.0.0" "git+https://github.com/llee454/ppx_profile.git#main"]
-  ["asemio_stats.1.0.0" "git+https://github.com/llee454/ocaml-gsl-demo.git#main"]
+  ["asemio_stats.1.0.0" "git+https://github.com/llee454/asemio_stats.git#main"]
 ]
 depends: [
   "ocaml"

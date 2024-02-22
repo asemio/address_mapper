@@ -65,13 +65,13 @@ let read_road_segment_table_file (config : Config.t) =
   let+ contents = Aux.read_file ~filename:config.segment_map_file in
   let (keys, data) : string array * Address_features.t list array = Marshal.from_string contents 0 in
   let road_segments_map = String.Table.create ~size:(Array.length keys * 2) () in
-  Array.iter2_exn keys data ~f:(fun key data -> String.Table.add_exn road_segments_map ~key ~data);
+  Array.iter2_exn keys data ~f:(fun key data -> Hashtbl.add_exn road_segments_map ~key ~data);
   road_segments_map
 
 let write_road_segment_table_file (config : Config.t) road_segments_map =
-  let key_queue = Queue.create ~capacity:(String.Table.length road_segments_map) () in
-  let data_queue = Queue.create ~capacity:(String.Table.length road_segments_map) () in
-  String.Table.iteri road_segments_map ~f:(fun ~key ~data ->
+  let key_queue = Queue.create ~capacity:(Hashtbl.length road_segments_map) () in
+  let data_queue = Queue.create ~capacity:(Hashtbl.length road_segments_map) () in
+  Hashtbl.iteri road_segments_map ~f:(fun ~key ~data ->
       Queue.enqueue key_queue key;
       Queue.enqueue data_queue data);
   let data = Queue.to_array key_queue, Queue.to_array data_queue in
@@ -115,7 +115,7 @@ let process_data_file (config : Config.t) headers zip_column_index address_colum
         let census_tracts =
           Address_features.get_segment_tract road_segments_map ?zip address
           |> String.Set.map ~f:Census_tract.name
-          |> String.Set.to_list
+          |> Set.to_list
           |> [%to_yojson: string list]
           |> sprintf !"%{Yojson.Safe}"
         in

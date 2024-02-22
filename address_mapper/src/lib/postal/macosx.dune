@@ -19,7 +19,7 @@
       -Werror
       -Wunused-variable
       -Weffc++
-      -I%{project_root}
+      -I%{project_root}/../..
     )
   )
   (foreign_archives

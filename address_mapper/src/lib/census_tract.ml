@@ -185,7 +185,7 @@ module Lookup = struct
       | Leaf { bbox = _; children } ->
         ( num_leaves + 1,
           Queue.length children
-          |> Int.Map.update tbl ~f:(function
+          |> Map.update tbl ~f:(function
                | None -> 1
                | Some n -> n + 1) )
     in

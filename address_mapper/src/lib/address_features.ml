@@ -282,13 +282,13 @@ let get workspace (tracts : Census_tract.Lookup.t) (attribs : Dbf.t array) (shap
 let get_segment_map segs =
   let segments = String.Table.create () in
   let index = String.Table.create () in
-  Array.iter segs ~f:(fun x -> String.Table.add_multi segments ~key:x.name ~data:x);
-  String.Table.iteri segments ~f:(fun ~key ~data ->
+  Array.iter segs ~f:(fun x -> Hashtbl.add_multi segments ~key:x.name ~data:x);
+  Hashtbl.iteri segments ~f:(fun ~key ~data ->
       Postal.parse key
-      |> Postal.AddressSet.iter ~f:(function
+      |> Set.iter ~f:(function
            | Postal.Address.{ road = Some road; _ } ->
              canonicalize_street_name road
-             |> String.Table.update index ~f:(function
+             |> Hashtbl.update index ~f:(function
                   | None -> data
                   | Some segments -> data @ segments)
            | _ -> ()));
@@ -306,7 +306,7 @@ let get_segment_map segs =
 *)
 let get_segment_tract segments ?zip address : Census_tract.Set.t =
   let canonical_addresses = Postal.parse address in
-  Postal.AddressSet.fold canonical_addresses ~init:Census_tract.Set.empty ~f:(fun acc -> function
+  Set.fold canonical_addresses ~init:Census_tract.Set.empty ~f:(fun acc -> function
     | Postal.Address.{ road = Some road; house_number = Some house_number; postcode; _ } -> (
       let num_opt =
         try Some (Int.of_string house_number) with
@@ -316,7 +316,7 @@ let get_segment_tract segments ?zip address : Census_tract.Set.t =
       match num_opt with
       | None -> acc
       | Some num -> (
-        let segs_opt = String.Table.find segments (canonicalize_street_name road) in
+        let segs_opt = Hashtbl.find segments (canonicalize_street_name road) in
         match segs_opt with
         | None -> acc
         | Some segs ->
@@ -325,14 +325,14 @@ let get_segment_tract segments ?zip address : Census_tract.Set.t =
               | Some side, _ when Side.address_on_side num side ->
                 Option.value_map side.tract ~default:acc ~f:(fun tract ->
                     match address_zip with
-                    | None -> Census_tract.Set.add acc tract
-                    | Some zip when [%equal: string] side.zip zip -> Census_tract.Set.add acc tract
+                    | None -> Set.add acc tract
+                    | Some zip when [%equal: string] side.zip zip -> Set.add acc tract
                     | _ -> acc)
               | _, Some side when Side.address_on_side num side ->
                 Option.value_map side.tract ~default:acc ~f:(fun tract ->
                     match address_zip with
-                    | None -> Census_tract.Set.add acc tract
-                    | Some zip when [%equal: string] side.zip zip -> Census_tract.Set.add acc tract
+                    | None -> Set.add acc tract
+                    | Some zip when [%equal: string] side.zip zip -> Set.add acc tract
                     | _ -> acc)
               | _, _ -> acc)))
     | _ -> acc)

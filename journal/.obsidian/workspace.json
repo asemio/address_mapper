@@ -11,12 +11,8 @@
             "id": "8c8b0fbdcecfb7c7",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "census tract lookup.md",
-                "mode": "preview",
-                "source": false
-              }
+              "type": "graph",
+              "state": {}
             }
           }
         ]
@@ -93,7 +89,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "census tract lookup.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -110,7 +105,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "census tract lookup.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -132,9 +126,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "census tract lookup.md"
-              }
+              "state": {}
             }
           }
         ]
@@ -156,8 +148,8 @@
   },
   "active": "8c8b0fbdcecfb7c7",
   "lastOpenFiles": [
-    "2024-01-04.md",
     "census tract lookup.md",
+    "2024-01-04.md",
     "qgis notes.md",
     "2023-04-04.md"
   ]

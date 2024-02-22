@@ -21,7 +21,8 @@ sudo make install
 cd ..
 opam switch create . 5.0.0+options --no-install
 opam update
-opam install --deps-only .
+opam upgrade
+opam install --deps-only . -y
 dune build
 ```
 

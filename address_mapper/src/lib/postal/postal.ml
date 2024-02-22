@@ -138,13 +138,13 @@ let parse address =
 
   Array.fold components ~init:String.Map.empty ~f:(fun acc (label, values) ->
       let left = String.Set.of_array values in
-      String.Map.update acc label ~f:(function
+      Map.update acc label ~f:(function
         | None -> left
-        | Some right -> String.Set.union left right))
-  |> String.Map.fold ~init:[ [] ] ~f:(fun ~key:label ~data:values combinations ->
+        | Some right -> Set.union left right))
+  |> Map.fold ~init:[ [] ] ~f:(fun ~key:label ~data:values combinations ->
          List.fold combinations ~init:[] ~f:(fun new_combinations combination ->
-             String.Set.fold values ~init:new_combinations ~f:(fun acc value ->
+             Set.fold values ~init:new_combinations ~f:(fun acc value ->
                  (Sexp.List [ Sexp.Atom label; Sexp.Atom value ] :: combination) :: acc)))
   |> List.fold ~init:AddressSet.empty ~f:(fun acc x ->
          let data = Sexp.List x |> Address.t_of_sexp in
-         AddressSet.add acc data)
+         Set.add acc data)
